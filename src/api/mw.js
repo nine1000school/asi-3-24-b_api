@@ -1,17 +1,26 @@
+import log from "@/api/middlewares/log"
 import methodNotAllowed from "@/api/middlewares/methodNotAllowed"
+import knex from "knex"
+import knexfile from "../../knexfile.mjs"
 
 const mw = (handlers) => async (req, res) => {
   const middlewares = handlers[req.method]
-  const sanitizedMiddlewares = [...(middlewares || [methodNotAllowed])]
+  const sanitizedMiddlewares = [log, ...(middlewares || [methodNotAllowed])]
   let currentMiddlewareIndex = 0
-  const next = async () => {
-    const middleware = sanitizedMiddlewares[currentMiddlewareIndex]
-    currentMiddlewareIndex += 1
+  const db = knex(knexfile)
+  const ctx = {
+    db,
+    req,
+    res,
+    next: async () => {
+      const middleware = sanitizedMiddlewares[currentMiddlewareIndex]
+      currentMiddlewareIndex += 1
 
-    await middleware(req, res, next)
+      await middleware(ctx)
+    },
   }
 
-  await next()
+  await ctx.next()
 }
 
 export default mw

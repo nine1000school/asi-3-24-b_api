@@ -1,27 +1,22 @@
 import mw from "@/api/mw"
-import { readDatabase } from "@/db/readDatabase"
-import { writeDatabase } from "@/db/writeDatabase"
-import { randomUUID } from "node:crypto"
 
 const handle = mw({
   POST: [
-    async (req, res) => {
-      const {
-        body: { description },
-      } = req
-      const db = await readDatabase()
-      const todo = {
-        id: randomUUID(),
-        description,
-        done: false,
-      }
-
-      await writeDatabase([...db, todo])
+    async ({
+      db,
+      req: {
+        body: { description, categoryId },
+      },
+      res,
+    }) => {
+      const [todo] = await db("todos")
+        .insert({ description, categoryId })
+        .returning("*")
 
       res.send(todo)
     },
   ],
-  GET: [async (req, res) => res.send(await readDatabase())],
+  GET: [async ({ res, db }) => res.send(await db("todos"))],
 })
 
 export default handle
