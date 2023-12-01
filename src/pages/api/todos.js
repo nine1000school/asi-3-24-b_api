@@ -3,20 +3,29 @@ import mw from "@/api/mw"
 const handle = mw({
   POST: [
     async ({
-      db,
+      models: { TodoModel },
       req: {
         body: { description, categoryId },
       },
       res,
     }) => {
-      const [todo] = await db("todos")
-        .insert({ description, categoryId })
-        .returning("*")
+      const todo = await TodoModel.query()
+        .insertAndFetch({
+          description,
+          categoryId,
+        })
+        .withGraphFetched("category")
 
       res.send(todo)
     },
   ],
-  GET: [async ({ res, db }) => res.send(await db("todos"))],
+  GET: [
+    async ({ res, models: { TodoModel } }) => {
+      const todos = await TodoModel.query().withGraphFetched("category")
+
+      res.send(todos)
+    },
+  ],
 })
 
 export default handle

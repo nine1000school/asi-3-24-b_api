@@ -1,17 +1,16 @@
 import { HTTP_ERRORS } from "@/api/constants"
 import mw from "@/api/mw"
-import { readDatabase } from "@/db/readDatabase"
-import { writeDatabase } from "@/db/writeDatabase"
-import { merge } from "@corex/deepmerge"
 
 const handle = mw({
   GET: [
-    async (req, res) => {
-      const {
+    async ({
+      models: { TodoModel },
+      req: {
         query: { todoId },
-      } = req
-      const db = await readDatabase()
-      const todo = db.find(({ id }) => id === todoId)
+      },
+      res,
+    }) => {
+      const todo = await TodoModel.query().findById(todoId)
 
       if (!todo) {
         res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
@@ -23,49 +22,49 @@ const handle = mw({
     },
   ],
   PATCH: [
-    async (req, res) => {
-      const {
+    async ({
+      models: { TodoModel },
+      req: {
         body,
         query: { todoId },
-      } = req
-      const db = await readDatabase()
-      const todoIndex = db.findIndex(({ id }) => id === todoId)
+      },
+      res,
+    }) => {
+      const todo = await TodoModel.query().findById(todoId)
 
-      if (todoIndex === -1) {
+      if (!todo) {
         res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
 
         return
       }
 
-      const todo = db[todoIndex]
-      const newTodo = merge([todo, body])
+      const updatedTodo = await TodoModel.query().updateAndFetchById(
+        todoId,
+        body,
+      )
 
-      await writeDatabase(db.with(todoIndex, newTodo))
-
-      res.send(newTodo)
+      res.send(updatedTodo)
     },
   ],
   DELETE: [
-    async (req, res) => {
-      const {
-        body,
+    async ({
+      models: { TodoModel },
+      req: {
         query: { todoId },
-      } = req
-      const db = await readDatabase()
-      const todoIndex = db.findIndex(({ id }) => id === todoId)
+      },
+      res,
+    }) => {
+      const todo = await TodoModel.query().findById(todoId)
 
-      if (todoIndex === -1) {
+      if (!todo) {
         res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
 
         return
       }
 
-      const todo = db[todoIndex]
-      const deletedTodo = merge([todo, body])
+      await TodoModel.query().deleteById(todoId)
 
-      await writeDatabase(db.filter(({ id }) => id !== todoId))
-
-      res.send(deletedTodo)
+      res.send(todo)
     },
   ],
 })
