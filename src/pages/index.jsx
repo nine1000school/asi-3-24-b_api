@@ -1,3 +1,15 @@
-const IndexPage = () => <div className="text-4xl">Hello world</div>
+import { useEffect, useState } from "react"
+
+const IndexPage = () => {
+  const [todos, setTodos] = useState([])
+
+  useEffect(() => {
+    ;(async () => {
+      // axios
+    })()
+  }, [])
+
+  return <table>...</table>
+}
 
 export default IndexPage

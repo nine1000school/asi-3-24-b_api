@@ -1,18 +1,24 @@
-import { descriptionValidator, emailValidator } from "@/utils/validators"
-import { ErrorMessage, Field, Form, Formik } from "formik"
-import * as yup from "yup"
+import { descriptionValidator } from "@/utils/validators"
+import FormField from "@/web/components/FormField"
+import axios from "axios"
+import { Form, Formik } from "formik"
+import { object } from "yup"
 
 const initialValues = {
-  email: "",
   description: "",
+  categoryId: 1,
 }
-const validationSchema = yup.object({
-  email: emailValidator.label("E-mail"),
+const validationSchema = object({
   description: descriptionValidator.label("Description"),
 })
+// eslint-disable-next-line max-lines-per-function
 const CreateTodoPage = () => {
-  const handleSubmit = (values) => {
-    console.log(values)
+  const handleSubmit = async (values, { resetForm }) => {
+    const { data } = await axios.post("http://localhost:3000/api/todos", values)
+
+    console.log(data)
+
+    resetForm()
   }
 
   return (
@@ -22,23 +28,7 @@ const CreateTodoPage = () => {
       onSubmit={handleSubmit}
     >
       <Form className="flex flex-col gap-4" noValidate>
-        <Field
-          name="email"
-          type="email"
-          className="border-2 p-2"
-          placeholder="Enter your e-mail"
-        />
-        <ErrorMessage name="email" component="p" className="text-red-500" />
-        <Field
-          name="description"
-          className="border-2 p-2"
-          placeholder="Enter a description"
-        />
-        <ErrorMessage
-          name="description"
-          component="p"
-          className="text-red-500"
-        />
+        <FormField name="description" placeholder="Enter a description" />
         <button
           type="submit"
           className="px-3 py-2 bg-blue-600 active:bg-blue-700 text-2xl text-white"
