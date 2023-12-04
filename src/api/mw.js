@@ -1,8 +1,11 @@
+import { HTTP_ERRORS } from "@/api/constants"
+import { NotFoundError, PublicError } from "@/api/errors"
 import log from "@/api/middlewares/log"
 import methodNotAllowed from "@/api/middlewares/methodNotAllowed"
 import BaseModel from "@/db/models/BaseModel"
 import TodoModel from "@/db/models/TodoModel"
 import knex from "knex"
+import { NotFoundError as ObjectionNotFoundError } from "objection"
 import knexfile from "../../knexfile.mjs"
 
 const mw = (handlers) => async (req, res) => {
@@ -15,6 +18,7 @@ const mw = (handlers) => async (req, res) => {
 
   const ctx = {
     db,
+
     models: {
       TodoModel,
     },
@@ -28,7 +32,31 @@ const mw = (handlers) => async (req, res) => {
     },
   }
 
-  await ctx.next()
+  try {
+    await ctx.next()
+  } catch (err) {
+    const error =
+      err instanceof ObjectionNotFoundError ? new NotFoundError() : err
+
+    if (!(error instanceof PublicError)) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+
+      res
+        .status(HTTP_ERRORS.INTERNAL_SERVER_ERROR)
+        .send({ error: "Something went wrong." })
+
+      return
+    }
+
+    if (error instanceof NotFoundError) {
+      res.status(HTTP_ERRORS.NOT_FOUND).send({ error })
+
+      return
+    }
+
+    res.status(HTTP_ERRORS.CLIENT_ERROR).send({ error })
+  }
 }
 
 export default mw

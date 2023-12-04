@@ -1,4 +1,3 @@
-import { HTTP_ERRORS } from "@/api/constants"
 import mw from "@/api/mw"
 
 const handle = mw({
@@ -10,13 +9,7 @@ const handle = mw({
       },
       res,
     }) => {
-      const todo = await TodoModel.query().findById(todoId)
-
-      if (!todo) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
+      const todo = await TodoModel.query().findById(todoId).throwIfNotFound()
 
       res.send(todo)
     },
@@ -30,18 +23,9 @@ const handle = mw({
       },
       res,
     }) => {
-      const todo = await TodoModel.query().findById(todoId)
-
-      if (!todo) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
-
-      const updatedTodo = await TodoModel.query().updateAndFetchById(
-        todoId,
-        body,
-      )
+      const updatedTodo = await TodoModel.query()
+        .updateAndFetchById(todoId, body)
+        .throwIfNotFound()
 
       res.send(updatedTodo)
     },
@@ -54,15 +38,9 @@ const handle = mw({
       },
       res,
     }) => {
-      const todo = await TodoModel.query().findById(todoId)
+      const todo = await TodoModel.query().findById(todoId).throwIfNotFound()
 
-      if (!todo) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
-
-      await TodoModel.query().deleteById(todoId)
+      await todo.$query().delete()
 
       res.send(todo)
     },
