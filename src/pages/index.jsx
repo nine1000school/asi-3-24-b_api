@@ -1,33 +1,41 @@
+import { useMutation, useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { useEffect, useState } from "react"
 
 // eslint-disable-next-line max-lines-per-function
 const IndexPage = () => {
-  const [todos, setTodos] = useState([])
+  const {
+    isLoading,
+    data: todos,
+    refetch,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: () =>
+      axios("http://localhost:3000/api/todos").then(({ data }) => data),
+  })
+  const { mutateAsync: toggleTodo } = useMutation({
+    mutationFn: (todo) =>
+      axios.patch(`http://localhost:3000/api/todos/${todo.id}`, {
+        isDone: !todo.isDone,
+      }),
+  })
+  const { mutateAsync: deleteTodo } = useMutation({
+    mutationFn: (todo) =>
+      axios.delete(`http://localhost:3000/api/todos/${todo.id}`),
+  })
   const handleClickToggle = (id) => async () => {
-    const index = todos.findIndex((todo) => todo.id === id)
-    const { data } = await axios.patch(
-      `http://localhost:3000/api/todos/${id}`,
-      {
-        isDone: !todos[index].isDone,
-      },
-    )
-
-    setTodos(todos.with(index, data))
+    const todo = todos.find(({ id: todoId }) => todoId === id)
+    await toggleTodo(todo)
+    await refetch()
   }
   const handleClickDelete = async (event) => {
     const id = Number.parseInt(event.target.getAttribute("data-id"), 10)
-    await axios.delete(`http://localhost:3000/api/todos/${id}`)
-    setTodos(todos.filter((todo) => todo.id !== id))
+    await deleteTodo(todos.find((todo) => todo.id === id))
+    await refetch()
   }
 
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await axios("http://localhost:3000/api/todos")
-
-      setTodos(data)
-    })()
-  }, [])
+  if (isLoading) {
+    return "Loading..."
+  }
 
   return (
     <table className="w-full">
