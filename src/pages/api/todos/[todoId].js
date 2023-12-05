@@ -1,10 +1,21 @@
+import { validate } from "@/api/middlewares/validate"
 import mw from "@/api/mw"
+import {
+  descriptionValidator,
+  idValidator,
+  statusValidator,
+} from "@/utils/validators"
 
 const handle = mw({
   GET: [
+    validate({
+      query: {
+        todoId: idValidator,
+      },
+    }),
     async ({
       models: { TodoModel },
-      req: {
+      input: {
         query: { todoId },
       },
       res,
@@ -15,9 +26,19 @@ const handle = mw({
     },
   ],
   PATCH: [
+    validate({
+      query: {
+        todoId: idValidator,
+      },
+      body: {
+        description: descriptionValidator.optional(),
+        categoryId: idValidator.optional(),
+        isDone: statusValidator.optional(),
+      },
+    }),
     async ({
       models: { TodoModel },
-      req: {
+      input: {
         body,
         query: { todoId },
       },
@@ -25,15 +46,21 @@ const handle = mw({
     }) => {
       const updatedTodo = await TodoModel.query()
         .updateAndFetchById(todoId, body)
+        .withGraphFetched("category")
         .throwIfNotFound()
 
       res.send(updatedTodo)
     },
   ],
   DELETE: [
+    validate({
+      query: {
+        todoId: idValidator,
+      },
+    }),
     async ({
       models: { TodoModel },
-      req: {
+      input: {
         query: { todoId },
       },
       res,

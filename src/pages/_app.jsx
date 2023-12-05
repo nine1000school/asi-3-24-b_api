@@ -12,7 +12,7 @@ const App = ({ Component, pageProps }) => (
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/contact">Contact</Link>
+              <Link href="/todos/create">Create</Link>
             </li>
           </ul>
         </nav>

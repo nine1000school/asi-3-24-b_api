@@ -18,7 +18,6 @@ const mw = (handlers) => async (req, res) => {
 
   const ctx = {
     db,
-
     models: {
       TodoModel,
     },

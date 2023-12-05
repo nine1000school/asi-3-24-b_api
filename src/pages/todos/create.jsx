@@ -14,9 +14,7 @@ const validationSchema = object({
 // eslint-disable-next-line max-lines-per-function
 const CreateTodoPage = () => {
   const handleSubmit = async (values, { resetForm }) => {
-    const { data } = await axios.post("http://localhost:3000/api/todos", values)
-
-    console.log(data)
+    await axios.post("http://localhost:3000/api/todos", values)
 
     resetForm()
   }
