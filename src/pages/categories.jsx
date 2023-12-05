@@ -5,29 +5,18 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 const IndexPage = () => {
   const {
     isLoading,
-    data: todos,
+    data: categories,
     refetch,
   } = useQuery({
-    queryKey: ["todos"],
-    queryFn: () => apiClient("/todos").then(({ data }) => data),
-  })
-  const { mutateAsync: toggleTodo } = useMutation({
-    mutationFn: (todo) =>
-      apiClient.patch(`/todos/${todo.id}`, {
-        isDone: !todo.isDone,
-      }),
+    queryKey: ["categories"],
+    queryFn: () => apiClient("/categories").then(({ data }) => data),
   })
   const { mutateAsync: deleteTodo } = useMutation({
-    mutationFn: (todoId) => apiClient.delete(`/todos/${todoId}`),
+    mutationFn: (categoryId) => apiClient.delete(`/categories/${categoryId}`),
   })
-  const handleClickToggle = (id) => async () => {
-    const todo = todos.find(({ id: todoId }) => todoId === id)
-    await toggleTodo(todo)
-    await refetch()
-  }
   const handleClickDelete = async (event) => {
-    const todoId = Number.parseInt(event.target.getAttribute("data-id"), 10)
-    await deleteTodo(todoId)
+    const categoryId = Number.parseInt(event.target.getAttribute("data-id"), 10)
+    await deleteTodo(categoryId)
     await refetch()
   }
 
@@ -39,7 +28,7 @@ const IndexPage = () => {
     <table className="w-full">
       <thead>
         <tr>
-          {["#", "Description", "Done", "Category", "", "🗑️"].map((label) => (
+          {["#", "Name", "🗑️"].map((label) => (
             <td
               key={label}
               className="p-4 bg-slate-300 text-center font-semibold"
@@ -50,15 +39,10 @@ const IndexPage = () => {
         </tr>
       </thead>
       <tbody>
-        {todos.map(({ id, description, isDone, category: { name } }) => (
+        {categories.map(({ id, name }) => (
           <tr key={id} className="even:bg-slate-100">
             <td className="p-4">{id}</td>
-            <td className="p-4">{description}</td>
-            <td className="p-4">{isDone ? "✅" : "❌"}</td>
             <td className="p-4">{name}</td>
-            <td className="p-4">
-              <button onClick={handleClickToggle(id)}>Toggle</button>
-            </td>
             <td className="p-4">
               <button data-id={id} onClick={handleClickDelete}>
                 Delete

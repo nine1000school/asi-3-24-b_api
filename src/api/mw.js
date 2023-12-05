@@ -2,17 +2,17 @@ import { HTTP_ERRORS } from "@/api/constants"
 import { NotFoundError, PublicError } from "@/api/errors"
 import log from "@/api/middlewares/log"
 import methodNotAllowed from "@/api/middlewares/methodNotAllowed"
+import config from "@/config"
 import BaseModel from "@/db/models/BaseModel"
 import TodoModel from "@/db/models/TodoModel"
 import knex from "knex"
 import { NotFoundError as ObjectionNotFoundError } from "objection"
-import knexfile from "../../knexfile.mjs"
 
 const mw = (handlers) => async (req, res) => {
   const middlewares = handlers[req.method]
   const sanitizedMiddlewares = [log, ...(middlewares || [methodNotAllowed])]
   let currentMiddlewareIndex = 0
-  const db = knex(knexfile)
+  const db = knex(config.db)
 
   BaseModel.knex(db)
 

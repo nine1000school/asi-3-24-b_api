@@ -12,10 +12,13 @@ const App = ({ Component, pageProps }) => (
           <nav className="ms-auto">
             <ul className="flex gap-4">
               <li>
-                <Link href="/">Home</Link>
+                <Link href="/">List todos</Link>
               </li>
               <li>
-                <Link href="/todos/create">Create</Link>
+                <Link href="/todos/create">Create todo</Link>
+              </li>
+              <li>
+                <Link href="/categories">List categories</Link>
               </li>
             </ul>
           </nav>

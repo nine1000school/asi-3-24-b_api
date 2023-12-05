@@ -1,68 +1,51 @@
-import { HTTP_ERRORS } from "@/api/constants"
 import mw from "@/api/mw"
 
 const handle = mw({
   GET: [
     async ({
-      db,
+      models: { CategoryModel },
       req: {
         query: { categoryId },
       },
       res,
     }) => {
-      const [category] = await db("categories").where({ id: categoryId })
-
-      if (!category) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
+      const category = await CategoryModel.query()
+        .findById(categoryId)
+        .throwIfNotFound()
 
       res.send(category)
     },
   ],
   PATCH: [
     async ({
-      db,
+      models: { CategoryModel },
       req: {
         body,
         query: { categoryId },
       },
       res,
     }) => {
-      const [category] = await db("categories").where({ id: categoryId })
-
-      if (!category) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
-
-      const [updatedCategory] = await db("categories")
-        .update(body)
-        .where({ id: categoryId })
-        .returning("*")
+      const updatedCategory = await CategoryModel.query()
+        .updateAndFetchById(categoryId, body)
+        .throwIfNotFound()
 
       res.send(updatedCategory)
     },
   ],
   DELETE: [
     async ({
-      db,
+      models: { TodoModel, CategoryModel },
       req: {
         query: { categoryId },
       },
       res,
     }) => {
-      const [category] = await db("categories").where({ id: categoryId })
+      const category = await CategoryModel.query()
+        .findById(categoryId)
+        .throwIfNotFound()
 
-      if (!category) {
-        res.status(HTTP_ERRORS.NOT_FOUND).send({ error: "Not found" })
-
-        return
-      }
-
-      await db("categories").delete().where()
+      await TodoModel.query().delete().where({ categoryId })
+      await category.$query().delete()
 
       res.send(category)
     },
