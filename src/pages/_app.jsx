@@ -1,6 +1,6 @@
 import "@/styles/globals.css"
+import Link from "@/web/components/Link"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import Link from "next/link"
 
 const client = new QueryClient()
 const App = ({ Component, pageProps }) => (

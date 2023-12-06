@@ -55,6 +55,8 @@ const mw = (handlers) => async (req, res) => {
     }
 
     res.status(HTTP_ERRORS.CLIENT_ERROR).send({ error })
+  } finally {
+    await db.destroy()
   }
 }
 
