@@ -8,11 +8,11 @@ export const getServerSideProps = async () => {
   const data = await apiClient("/todos").then(({ data: result }) => result)
 
   return {
-    props: data,
+    props: { initialData: data },
   }
 }
 // eslint-disable-next-line max-lines-per-function
-const IndexPage = (props) => {
+const IndexPage = ({ initialData }) => {
   const { query } = useRouter()
   const page = Number.parseInt(query.page || 1, 10)
   const {
@@ -26,7 +26,7 @@ const IndexPage = (props) => {
     queryKey: ["todos", page],
     queryFn: () =>
       apiClient("/todos", { params: { page } }).then(({ data }) => data),
-    initialData: props,
+    initialData,
   })
   const { mutateAsync: toggleTodo } = useMutation({
     mutationFn: (todo) =>

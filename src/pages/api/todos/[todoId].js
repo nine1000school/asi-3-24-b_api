@@ -1,9 +1,9 @@
 import { validate } from "@/api/middlewares/validate"
 import mw from "@/api/mw"
 import {
-  descriptionValidator,
   idValidator,
   statusValidator,
+  todoDescriptionValidator,
 } from "@/utils/validators"
 
 const handle = mw({
@@ -31,7 +31,7 @@ const handle = mw({
         todoId: idValidator,
       },
       body: {
-        description: descriptionValidator.optional(),
+        description: todoDescriptionValidator.optional(),
         categoryId: idValidator.optional(),
         isDone: statusValidator.optional(),
       },

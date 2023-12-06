@@ -4,6 +4,7 @@ import log from "@/api/middlewares/log"
 import methodNotAllowed from "@/api/middlewares/methodNotAllowed"
 import config from "@/config"
 import BaseModel from "@/db/models/BaseModel"
+import CategoryModel from "@/db/models/CategoryModel"
 import TodoModel from "@/db/models/TodoModel"
 import knex from "knex"
 import { NotFoundError as ObjectionNotFoundError } from "objection"
@@ -20,6 +21,7 @@ const mw = (handlers) => async (req, res) => {
     db,
     models: {
       TodoModel,
+      CategoryModel,
     },
     req,
     res,

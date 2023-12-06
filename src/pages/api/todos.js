@@ -1,10 +1,10 @@
 import { validate } from "@/api/middlewares/validate"
 import mw from "@/api/mw"
 import {
-  descriptionValidator,
   idValidator,
   pageValidator,
   statusValidator,
+  todoDescriptionValidator,
 } from "@/utils/validators"
 import config from "@/web/config"
 
@@ -12,7 +12,7 @@ const handle = mw({
   POST: [
     validate({
       body: {
-        description: descriptionValidator,
+        description: todoDescriptionValidator,
         categoryId: idValidator,
         isDone: statusValidator.optional(),
       },
@@ -55,16 +55,13 @@ const handle = mw({
         .limit(config.ui.itemsPerPage)
         .offset((page - 1) * config.ui.itemsPerPage)
       const [{ count }] = await query.clone().count()
-      setTimeout(
-        () =>
-          res.send({
-            result: todos,
-            meta: {
-              count,
-            },
-          }),
-        3000,
-      )
+
+      res.send({
+        result: todos,
+        meta: {
+          count,
+        },
+      })
     },
   ],
 })

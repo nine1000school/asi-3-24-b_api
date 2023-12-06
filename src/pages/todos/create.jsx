@@ -1,4 +1,4 @@
-import { descriptionValidator } from "@/utils/validators"
+import { todoDescriptionValidator } from "@/utils/validators"
 import FormField from "@/web/components/FormField"
 import axios from "axios"
 import { Form, Formik } from "formik"
@@ -9,7 +9,7 @@ const initialValues = {
   categoryId: 1,
 }
 const validationSchema = object({
-  description: descriptionValidator.label("Description"),
+  description: todoDescriptionValidator.label("Description"),
 })
 // eslint-disable-next-line max-lines-per-function
 const CreateTodoPage = () => {
