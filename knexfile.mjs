@@ -10,6 +10,11 @@ const knexfile = {
     stub: "./src/db/migration.stub",
     loadExtensions: [".mjs"],
   },
+  seeds: {
+    directory: "./src/db/seeds",
+    stub: "./src/db/seed.stub",
+    loadExtensions: [".mjs"],
+  },
 }
 
 export default knexfile
