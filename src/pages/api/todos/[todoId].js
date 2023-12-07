@@ -45,7 +45,10 @@ const handle = mw({
       res,
     }) => {
       const updatedTodo = await TodoModel.query()
-        .updateAndFetchById(todoId, body)
+        .updateAndFetchById(todoId, {
+          ...body,
+          updatedAt: TodoModel.fn.now(),
+        })
         .withGraphFetched("category")
         .throwIfNotFound()
 

@@ -26,7 +26,10 @@ const handle = mw({
       res,
     }) => {
       const updatedCategory = await CategoryModel.query()
-        .updateAndFetchById(categoryId, body)
+        .updateAndFetchById(categoryId, {
+          ...body,
+          updatedAt: CategoryModel.fn.now(),
+        })
         .throwIfNotFound()
 
       res.send(updatedCategory)

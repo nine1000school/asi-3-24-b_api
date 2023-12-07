@@ -1,6 +1,8 @@
 import { emailValidator, passwordValidator } from "@/utils/validators"
+import Alert from "@/web/components/ui/Alert"
 import Form from "@/web/components/ui/Form"
 import FormField from "@/web/components/ui/FormField"
+import Link from "@/web/components/ui/Link"
 import SubmitButton from "@/web/components/ui/SubmitButton"
 import apiClient from "@/web/services/apiClient"
 import { useMutation } from "@tanstack/react-query"
@@ -16,7 +18,7 @@ const validationSchema = object({
   password: passwordValidator.label("Password"),
 })
 const SignUpPage = () => {
-  const { isFetching, error, mutateAsync } = useMutation({
+  const { isSuccess, mutateAsync } = useMutation({
     mutationFn: (values) =>
       apiClient.post("/users", values).then(({ data }) => data),
   })
@@ -26,9 +28,22 @@ const SignUpPage = () => {
     return true
   }
 
+  if (isSuccess) {
+    return (
+      <div className="flex flex-col gap-4">
+        <Alert>
+          We just sent you an e-mail. Please use the provided link to validate
+          your account ❤️
+        </Alert>
+        <p>
+          <Link href="/sign-in">Go to sign-in page.</Link>
+        </p>
+      </div>
+    )
+  }
+
   return (
     <>
-      <pre>{JSON.stringify(error)}</pre>
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}

@@ -3,6 +3,14 @@ import { faker } from "@faker-js/faker"
 export const seed = async (db) => {
   await db("todos").delete()
   await db("categories").delete()
+  await db("users").delete()
+  await db("users").insert(
+    [...Array(5)].map(() => ({
+      email: faker.internet.email(),
+      passwordHash: "alskdjalsdkjasdlkj",
+      passwordSalt: "alskdjalsdkjasdlkj",
+    })),
+  )
   const categories = await db("categories")
     .insert(
       [...new Array(30)].map(() => ({

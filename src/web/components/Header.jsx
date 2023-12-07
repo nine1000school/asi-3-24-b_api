@@ -12,22 +12,32 @@ const Header = () => {
             {session ? (
               <>
                 <li>
-                  <Link href="/">List todos</Link>
+                  <Link styless href="/">
+                    List todos
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/todos/create">Create todo</Link>
+                  <Link styless href="/todos/create">
+                    Create todo
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/categories">List categories</Link>
+                  <Link styless href="/categories">
+                    List categories
+                  </Link>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link href="/sign-up">Sign Up</Link>
+                  <Link styless href="/sign-up">
+                    Sign Up
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/sign-in">Sign In</Link>
+                  <Link styless href="/sign-in">
+                    Sign In
+                  </Link>
                 </li>
               </>
             )}
