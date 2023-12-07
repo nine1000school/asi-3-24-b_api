@@ -5,8 +5,10 @@ import apiClient from "@/web/services/apiClient"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/router"
 
-export const getServerSideProps = async () => {
-  const data = await apiClient("/todos").then(({ data: result }) => result)
+export const getServerSideProps = async ({ query: { page } }) => {
+  const data = await apiClient("/todos", { params: { page } }).then(
+    ({ data: result }) => result,
+  )
 
   return {
     props: { initialData: data },
@@ -28,6 +30,7 @@ const IndexPage = ({ initialData }) => {
     queryFn: () =>
       apiClient("/todos", { params: { page } }).then(({ data }) => data),
     initialData,
+    enabled: false,
   })
   const { mutateAsync: toggleTodo } = useMutation({
     mutationFn: (todo) =>

@@ -4,8 +4,10 @@ import apiClient from "@/web/services/apiClient"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/router"
 
-export const getServerSideProps = async () => {
-  const data = await apiClient("/categories").then(({ data: result }) => result)
+export const getServerSideProps = async ({ query: { page } }) => {
+  const data = await apiClient("/categories", { params: { page } }).then(
+    ({ data: result }) => result,
+  )
 
   return {
     props: { initialData: data },
@@ -27,6 +29,7 @@ const CategoriesPage = ({ initialData }) => {
     queryFn: () =>
       apiClient("/categories", { params: { page } }).then(({ data }) => data),
     initialData,
+    enabled: false,
   })
   const { mutateAsync: deleteTodo } = useMutation({
     mutationFn: (categoryId) => apiClient.delete(`/categories/${categoryId}`),

@@ -52,6 +52,7 @@ const handle = mw({
       const todos = await query
         .clone()
         .withGraphFetched("category")
+        .orderBy("createdAt", "DESC")
         .limit(config.ui.itemsPerPage)
         .offset((page - 1) * config.ui.itemsPerPage)
       const [{ count }] = await query.clone().count()
