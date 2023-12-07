@@ -1,7 +1,8 @@
 import { todoDescriptionValidator } from "@/utils/validators"
-import FormField from "@/web/components/FormField"
+import Form from "@/web/components/ui/Form"
+import FormField from "@/web/components/ui/FormField"
 import axios from "axios"
-import { Form, Formik } from "formik"
+import { Formik } from "formik"
 import { object } from "yup"
 
 const initialValues = {
@@ -25,7 +26,7 @@ const CreateTodoPage = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      <Form className="flex flex-col gap-4" noValidate>
+      <Form>
         <FormField name="description" placeholder="Enter a description" />
         <button
           type="submit"

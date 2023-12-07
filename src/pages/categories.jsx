@@ -1,5 +1,5 @@
-import Loader from "@/web/components/Loader"
-import Pagination from "@/web/components/Pagination"
+import Loader from "@/web/components/ui/Loader"
+import Pagination from "@/web/components/ui/Pagination"
 import apiClient from "@/web/services/apiClient"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/router"
