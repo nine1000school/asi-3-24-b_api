@@ -6,9 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/router"
 
 export const getServerSideProps = async ({ query: { page } }) => {
-  const data = await apiClient("/todos", { params: { page } }).then(
-    ({ data: result }) => result,
-  )
+  const data = await apiClient("/todos", { params: { page } })
 
   return {
     props: { initialData: data },
@@ -27,8 +25,7 @@ const IndexPage = ({ initialData }) => {
     refetch,
   } = useQuery({
     queryKey: ["todos", page],
-    queryFn: () =>
-      apiClient("/todos", { params: { page } }).then(({ data }) => data),
+    queryFn: () => apiClient("/todos", { params: { page } }),
     initialData,
     enabled: false,
   })

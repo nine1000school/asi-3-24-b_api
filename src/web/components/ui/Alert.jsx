@@ -20,7 +20,11 @@ const Alert = ({ className, variant = "info", children, ...otherProps }) => {
 
   return (
     <div
-      className={clsx("p-4 flex gap-4", variants[variant], className)}
+      className={clsx(
+        "p-3 rounded-lg flex items-center gap-4",
+        variants[variant],
+        className,
+      )}
       {...otherProps}
     >
       <Icon className="w-10 h-10" />

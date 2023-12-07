@@ -52,13 +52,7 @@ const mw = (handlers) => async (req, res) => {
       return
     }
 
-    if (error instanceof NotFoundError) {
-      res.status(HTTP_ERRORS.NOT_FOUND).send({ error })
-
-      return
-    }
-
-    res.status(HTTP_ERRORS.CLIENT_ERROR).send({ error })
+    res.status(error.httpCode).send({ error })
   } finally {
     await db.destroy()
   }

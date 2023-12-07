@@ -1,12 +1,12 @@
 import { emailValidator, passwordValidator } from "@/utils/validators"
-import Alert from "@/web/components/ui/Alert"
+import ErrorMessage from "@/web/components/ui/ErrorMessage"
 import Form from "@/web/components/ui/Form"
 import FormField from "@/web/components/ui/FormField"
-import Link from "@/web/components/ui/Link"
 import SubmitButton from "@/web/components/ui/SubmitButton"
 import apiClient from "@/web/services/apiClient"
 import { useMutation } from "@tanstack/react-query"
 import { Formik } from "formik"
+import { useRouter } from "next/router"
 import { object } from "yup"
 
 const initialValues = {
@@ -18,31 +18,19 @@ const validationSchema = object({
   password: passwordValidator.label("Password"),
 })
 const SignUpPage = () => {
-  const { isSuccess, mutateAsync } = useMutation({
-    mutationFn: (values) => apiClient.post("/users", values),
+  const router = useRouter()
+  const { mutateAsync, error } = useMutation({
+    mutationFn: (values) => apiClient.post("/sessions", values),
   })
   const handleSubmit = async (values) => {
     await mutateAsync(values)
 
-    return true
-  }
-
-  if (isSuccess) {
-    return (
-      <div className="flex flex-col gap-4">
-        <Alert>
-          We just sent you an e-mail. Please use the provided link to validate
-          your account ❤️
-        </Alert>
-        <p>
-          <Link href="/sign-in">Go to sign-in page.</Link>
-        </p>
-      </div>
-    )
+    router.push("/")
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <ErrorMessage error={error} />
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -61,10 +49,10 @@ const SignUpPage = () => {
             placeholder="Enter your password"
             label="Password"
           />
-          <SubmitButton>Sign Up</SubmitButton>
+          <SubmitButton>Sign In</SubmitButton>
         </Form>
       </Formik>
-    </>
+    </div>
   )
 }
 
