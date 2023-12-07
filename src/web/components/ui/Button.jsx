@@ -13,7 +13,12 @@ const Button = ({
   ...otherProps
 }) => (
   <button
-    className={clsx(variants[variant], sizes[size], className)}
+    className={clsx(
+      " disabled:bg-slate-200 disabled:text-black",
+      variants[variant],
+      sizes[size],
+      className,
+    )}
     {...otherProps}
   />
 )

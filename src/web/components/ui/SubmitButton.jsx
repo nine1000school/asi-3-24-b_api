@@ -5,7 +5,11 @@ const SubmitButton = ({ disabled, ...otherProps }) => {
   const { isSubmitting, isValid } = useFormikContext()
 
   return (
-    <Button disabled={disabled || isSubmitting || !isValid} {...otherProps} />
+    <Button
+      disabled={disabled || isSubmitting || !isValid}
+      type="submit"
+      {...otherProps}
+    />
   )
 }
 
