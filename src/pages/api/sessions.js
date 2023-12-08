@@ -61,7 +61,7 @@ const handle = mw({
 
   DELETE: [
     auth,
-    async ({ res }) => {
+    ({ res }) => {
       const cookie = new NextResponse().cookies.set({
         name: config.security.jwt.cookieName,
         value: "",
