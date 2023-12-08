@@ -1,4 +1,5 @@
 import { emailValidator, passwordValidator } from "@/utils/validators"
+import { useSession } from "@/web/components/SessionContext"
 import ErrorMessage from "@/web/components/ui/ErrorMessage"
 import Form from "@/web/components/ui/Form"
 import FormField from "@/web/components/ui/FormField"
@@ -19,11 +20,14 @@ const validationSchema = object({
 })
 const SignUpPage = () => {
   const router = useRouter()
+  const { saveSessionToken } = useSession()
   const { mutateAsync, error } = useMutation({
     mutationFn: (values) => apiClient.post("/sessions", values),
   })
   const handleSubmit = async (values) => {
-    await mutateAsync(values)
+    const { result: jwt } = await mutateAsync(values)
+
+    saveSessionToken(jwt)
 
     router.push("/")
   }

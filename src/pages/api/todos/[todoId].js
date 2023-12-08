@@ -1,3 +1,4 @@
+import auth from "@/api/middlewares/auth"
 import { validate } from "@/api/middlewares/validate"
 import mw from "@/api/mw"
 import {
@@ -26,6 +27,7 @@ const handle = mw({
     },
   ],
   PATCH: [
+    auth,
     validate({
       query: {
         todoId: idValidator,
@@ -56,6 +58,7 @@ const handle = mw({
     },
   ],
   DELETE: [
+    auth,
     validate({
       query: {
         todoId: idValidator,

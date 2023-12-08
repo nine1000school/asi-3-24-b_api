@@ -1,3 +1,4 @@
+import auth from "@/api/middlewares/auth"
 import { validate } from "@/api/middlewares/validate"
 import mw from "@/api/mw"
 import {
@@ -10,6 +11,7 @@ import config from "@/web/config"
 
 const handle = mw({
   POST: [
+    auth,
     validate({
       body: {
         description: todoDescriptionValidator,

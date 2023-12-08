@@ -2,8 +2,10 @@ import clsx from "clsx"
 
 const variants = {
   primary: "bg-blue-600 active:bg-blue-700 text-white",
+  transparent: "",
 }
 const sizes = {
+  inherit: "",
   md: "px-3 py-2 text-xl font-semibold",
 }
 const Button = ({

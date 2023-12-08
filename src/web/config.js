@@ -7,6 +7,11 @@ const validationSchema = object({
   ui: object({
     itemsPerPage: number().max(15).required(),
   }),
+  security: object({
+    session: object({
+      storageKey: string().required(),
+    }),
+  }),
 }).noUnknown()
 const data = {
   api: {
@@ -14,6 +19,11 @@ const data = {
   },
   ui: {
     itemsPerPage: 5,
+  },
+  security: {
+    session: {
+      storageKey: "sessionToken",
+    },
   },
 }
 const config = (() => {
