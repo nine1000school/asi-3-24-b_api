@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "npx eslint --ext js,jsx,cjs . && next lint"
+    "lint": "npx eslint --ext js,jsx,mjs,cjs . && next lint"
   },
   "dependencies": {
     "@corex/deepmerge": "^4.0.43",
