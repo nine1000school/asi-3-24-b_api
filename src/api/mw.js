@@ -1,15 +1,30 @@
+import { HTTP_ERRORS } from "@/api/constants"
+import { NotFoundError, PublicError } from "@/api/errors"
 import log from "@/api/middlewares/log"
 import methodNotAllowed from "@/api/middlewares/methodNotAllowed"
+import config from "@/config"
+import BaseModel from "@/db/models/BaseModel"
+import PostModel from "@/db/models/PostModel"
+import LikeModel from "@/db/models/LikeModel"
+import UserModel from "@/db/models/UserModel"
 import knex from "knex"
-import knexfile from "../../knexfile.mjs"
+import { NotFoundError as ObjectionNotFoundError } from "objection"
 
 const mw = (handlers) => async (req, res) => {
   const middlewares = handlers[req.method]
   const sanitizedMiddlewares = [log, ...(middlewares || [methodNotAllowed])]
   let currentMiddlewareIndex = 0
-  const db = knex(knexfile)
+  const db = knex(config.db)
+
+  BaseModel.knex(db)
+
   const ctx = {
     db,
+    models: {
+      LikeModel,
+      PostModel,
+      UserModel,
+    },
     req,
     res,
     next: async () => {
@@ -20,7 +35,27 @@ const mw = (handlers) => async (req, res) => {
     },
   }
 
-  await ctx.next()
+  try {
+    await ctx.next()
+  } catch (err) {
+    const error =
+      err instanceof ObjectionNotFoundError ? new NotFoundError() : err
+
+    if (!(error instanceof PublicError)) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+
+      res
+        .status(HTTP_ERRORS.INTERNAL_SERVER_ERROR)
+        .send({ error: "Something went wrong." })
+
+      return
+    }
+
+    res.status(error.httpCode).send({ error })
+  } finally {
+    await db.destroy()
+  }
 }
 
 export default mw
